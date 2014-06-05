@@ -1,0 +1,6 @@
+((synopsis "Provides a high-level API to leveldb implementations")
+ (author "Caolan McMahon")
+ (category db)
+ (license "BSD")
+ (needs interfaces)
+ (test-depends test))

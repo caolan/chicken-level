@@ -1,0 +1,6 @@
+/*.o
+/*.so
+/level-static.cpp
+/level.cpp
+/level.import.c
+/level.import.scm
