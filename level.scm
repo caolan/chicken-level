@@ -3,6 +3,7 @@
    make-level
    make-level-api
    level-resource
+   set-level-resource!
    level-implementation
    level?
    level-api
@@ -20,6 +21,7 @@
 (define level? (record-predicate level))
 (define make-level (record-constructor level))
 (define level-resource (record-accessor level 'resource))
+(define set-level-resource! (record-modifier level 'resource))
 (define level-implementation (record-accessor level 'implementation))
 
 
@@ -36,7 +38,6 @@
   ((batch (level-implementation db)) (level-resource db) ops sync: sync))
 
 (define (db-stream db
-                   thunk
                    #!key
                    start
                    end
@@ -47,7 +48,6 @@
                    fillcache)
   ((stream (level-implementation db))
    (level-resource db)
-   thunk
    start: start
    end: end
    limit: limit
@@ -58,13 +58,11 @@
 
 
 (interface level-api
-  (define (close db))
   (define (get db key))
   (define (put db key value #!key (sync #f)))
   (define (delete db key #!key (sync #f)))
   (define (batch db ops #!key (sync #f)))
   (define (stream db
-                  thunk
                   #!key
                   start
                   end
