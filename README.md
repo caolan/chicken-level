@@ -1,7 +1,7 @@
 # chicken-level
 
 Provides a high-level API to leveldb implementations. Use in combination
-with an implementation egg (eg, chicken-leveldb).
+with an implementation egg (eg, [leveldb][1]).
 
 ## Interface API
 
@@ -70,7 +70,7 @@ bulk updates by placing lots of individual mutations into the same batch.
 
 Allows forward and backward iteration over the keys in alphabetical order.
 Returns a lazy sequence of all key/value pairs from `start` to `end`
-(up to `limit`). This uses the [lazy-seq][3] egg.
+(up to `limit`). This uses the [lazy-seq][2] egg.
 
 * __start__ - the key to start from (need not actually exist), if omitted
   starts from the first key in the database
@@ -136,7 +136,12 @@ and define the interface as follows:
       ..)))
 ```
 
+## Implementations
 
-[1]: https://code.google.com/p/leveldb/
-[2]: http://leveldb.googlecode.com/svn/trunk/doc/index.html
-[3]: http://wiki.call-cc.org/eggref/4/lazy-seq
+- [leveldb](https://github.com/caolan/chicken-leveldb) - provides the `level`
+  API to libleveldb
+- [sublevel](https://github.com/caolan/chicken-sublevel) - provides namespaced
+  API access to another implementation
+
+[1]: https://github.com/caolan/chicken-leveldb
+[2]: http://wiki.call-cc.org/eggref/4/lazy-seq
