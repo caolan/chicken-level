@@ -108,6 +108,33 @@ unless you know the number of values is small (eg, when using `limit`).
 (lazy-seq->list (db-stream db key: #t value: #f)) ;; => ("foo" "bar" "baz")
 ```
 
+### Synchronous Writes
+
+**Note:** this information is mostly copied from the [LevelDB docs][3]
+
+By default, each write to leveldb is asynchronous: it returns after pushing
+the write from the process into the operating system. The transfer from
+operating system memory to the underlying persistent storage happens
+asynchronously. The sync flag can be turned on for a particular write to
+make the write operation not return until the data being written has been
+pushed all the way to persistent storage. (On Posix systems, this is
+implemented by calling either fsync(...) or fdatasync(...) or msync(...,
+MS\_SYNC) before the write operation returns.)
+
+Asynchronous writes are often more than a thousand times as fast as
+synchronous writes. The downside of asynchronous writes is that a
+crash of the machine may cause the last few updates to be lost. Note
+that a crash of just the writing process (i.e., not a reboot) will
+not cause any loss since even when sync is false, an update is pushed
+from the process memory into the operating system before it is
+considered done.
+
+`db-batch` provides an alternative to asynchronous writes. Multiple
+updates may be placed in the same batch and applied together
+using a `sync: #t`. The extra cost of the synchronous write will be
+amortized across all of the writes in the batch.
+
+
 ## Creating an interface
 
 If you want to provide your own storage impelmentation, import this egg
@@ -145,3 +172,4 @@ and define the interface as follows:
 
 [1]: https://github.com/caolan/chicken-leveldb
 [2]: http://wiki.call-cc.org/eggref/4/lazy-seq
+[3]: http://leveldb.googlecode.com/svn/trunk/doc/index.html
