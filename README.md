@@ -18,6 +18,13 @@ Returns the value of `key` in `db` as a string. Causes an exception if the
 key does not exist.
 
 ```scheme
+(db-get/default db key default)
+```
+
+Same as db-get but returns default instead of causing an exception if the
+key is missing.
+
+```scheme
 (db-put db key value #!key (sync #f))
 ```
 
@@ -146,20 +153,21 @@ and define the interface as follows:
 (define myleveldb
   (implementation level-api
 
-    (define (get db key) ...)
-    (define (put db key value #!key (sync #f)) ...)
-    (define (delete db key #!key (sync #f)) ...)
-    (define (batch db ops #!key (sync #f)) ...)
+    (define (level-get db key) ...)
+    (define (level-get/default db key default) ...)
+    (define (level-put db key value #!key (sync #f)) ...)
+    (define (level-delete db key #!key (sync #f)) ...)
+    (define (level-batch db ops #!key (sync #f)) ...)
 
-    (define (stream db
-                    #!key
-                    start
-                    end
-                    limit
-                    reverse
-                    (key #t)
-                    (value #t)
-                    fillcache)
+    (define (level-stream db
+                          #!key
+                          start
+                          end
+                          limit
+                          reverse
+                          (key #t)
+                          (value #t)
+                          fillcache)
       ..)))
 ```
 
