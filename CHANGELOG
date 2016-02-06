@@ -1,0 +1,8 @@
+2.0.0:
+    - make-level now expects three arguments (implemenation name, interface implementation, resource)
+      and returns a level record
+    - all write operations should now return #<unspecified> instead of #t
+    - added db-get/default procedure (and level-get/default method to interface)
+    - interface method names now use a "level-" prefix, eg level-get instead of get
+    - db-stream should now return key+value combinations as pairs instead of lists
+      eg, (("key" . "value")) instead of (("key" "value"))

@@ -7,5 +7,5 @@
 (install-extension
   'level
   '("level.so" "level.import.so" "level-static.o")
-  '((version "4.0.0")
+  '((version "2.0.0")
     (static "level-static.o")))
