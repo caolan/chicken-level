@@ -1,52 +1,55 @@
 (module level
-  (
-   make-level
-   make-level-api
-   level-resource
-   set-level-resource!
-   level-implementation
-   level?
-   level-api
-   db-get
-   db-put
-   db-delete
-   db-batch
-   db-stream
-   )
+
+;; exports
+(make-level
+ make-level-api
+ level-resource
+ level-resource-set!
+ level-implementation
+ level?
+ level-api
+ db-get
+ db-get/default
+ db-put
+ db-delete
+ db-batch
+ db-stream)
 
 (import scheme chicken)
-(use interfaces records)
+(use interfaces)
 
-(define level (make-record-type 'level '(implementation resource)))
-(define level? (record-predicate level))
-(define make-level (record-constructor level))
-(define level-resource (record-accessor level 'resource))
-(define set-level-resource! (record-modifier level 'resource))
-(define level-implementation (record-accessor level 'implementation))
-
+;; type: symbol describing the implementation being used (to aid debugging)
+;; implementation: the implementation of the level-api interface
+;; resource: the underlying resource (eg, pointer to leveldb DB object)
+(define-record level type implementation resource)
+(define-record-printer (level x out)
+  (fprintf out "#<level ~S ~S>"
+           (level-type x)
+           (level-resource x)))
 
 (define (db-get db key)
-  ((get (level-implementation db)) (level-resource db) key))
+  ((level-get (level-implementation db))
+   (level-resource db) key))
+
+(define (db-get/default db key default)
+  ((level-get/default (level-implementation db))
+   (level-resource db) key default))
 
 (define (db-put db key value #!key (sync #f))
-  ((put (level-implementation db)) (level-resource db) key value sync: sync))
+  ((level-put (level-implementation db))
+   (level-resource db) key value sync: sync))
 
 (define (db-delete db key #!key (sync #f))
-  ((delete (level-implementation db)) (level-resource db) key sync: sync))
+  ((level-delete (level-implementation db))
+   (level-resource db) key sync: sync))
 
 (define (db-batch db ops #!key (sync #f))
-  ((batch (level-implementation db)) (level-resource db) ops sync: sync))
+  ((level-batch (level-implementation db))
+   (level-resource db) ops sync: sync))
 
-(define (db-stream db
-                   #!key
-                   start
-                   end
-                   limit
-                   reverse
-                   (key #t)
-                   (value #t)
-                   fillcache)
-  ((stream (level-implementation db))
+(define (db-stream db #!key start end limit reverse
+                   (key #t) (value #t) fillcache)
+  ((level-stream (level-implementation db))
    (level-resource db)
    start: start
    end: end
@@ -56,18 +59,11 @@
    value: value
    fillcache: fillcache))
 
-
 (interface level-api
-  (define (get db key))
-  (define (put db key value #!key (sync #f)))
-  (define (delete db key #!key (sync #f)))
-  (define (batch db ops #!key (sync #f)))
-  (define (stream db
-                  #!key
-                  start
-                  end
-                  limit
-                  reverse
-                  (key #t)
-                  (value #t)
-                  fillcache))))
+  (define (level-get db key))
+  (define (level-get/default db key default))
+  (define (level-put db key value #!key (sync #f)))
+  (define (level-delete db key #!key (sync #f)))
+  (define (level-batch db ops #!key (sync #f)))
+  (define (level-stream db #!key start end limit reverse
+                        (key #t) (value #t) fillcache))))
