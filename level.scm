@@ -13,7 +13,9 @@
  db-put
  db-delete
  db-batch
- db-stream)
+ db-keys
+ db-values
+ db-pairs)
 
 (import scheme chicken)
 (use interfaces)
@@ -47,16 +49,31 @@
   ((level-batch (level-implementation db))
    (level-resource db) ops sync: sync))
 
-(define (db-stream db #!key start end limit reverse
-                   (key #t) (value #t) fillcache)
-  ((level-stream (level-implementation db))
+(define (db-keys db #!key start end limit reverse fillcache)
+  ((level-keys (level-implementation db))
    (level-resource db)
    start: start
    end: end
    limit: limit
    reverse: reverse
-   key: key
-   value: value
+   fillcache: fillcache))
+
+(define (db-values db #!key start end limit reverse fillcache)
+  ((level-values (level-implementation db))
+   (level-resource db)
+   start: start
+   end: end
+   limit: limit
+   reverse: reverse
+   fillcache: fillcache))
+
+(define (db-pairs db #!key start end limit reverse fillcache)
+  ((level-pairs (level-implementation db))
+   (level-resource db)
+   start: start
+   end: end
+   limit: limit
+   reverse: reverse
    fillcache: fillcache))
 
 (interface level-api
@@ -65,5 +82,8 @@
   (define (level-put db key value #!key (sync #f)))
   (define (level-delete db key #!key (sync #f)))
   (define (level-batch db ops #!key (sync #f)))
-  (define (level-stream db #!key start end limit reverse
-                        (key #t) (value #t) fillcache))))
+  (define (level-keys db #!key start end limit reverse fillcache))
+  (define (level-values db #!key start end limit reverse fillcache))
+  (define (level-pairs db #!key start end limit reverse fillcache)))
+
+)
