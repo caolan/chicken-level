@@ -1,3 +1,6 @@
+3.0.0:
+    - add db-keys, db-values and db-pairs: previously these were available by customizing db-steam via keyword parameters
+    - remove db-stream, use db-keys, db-values or db-pairs instead
 2.0.0:
     - make-level now expects three arguments (implemenation name, interface implementation, resource)
       and returns a level record
